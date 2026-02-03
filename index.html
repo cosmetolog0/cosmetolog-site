@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Косметолог | Услуги и цены</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary-color: #f8e1e7;
+            --secondary-color: #d8a7b1;
+            --accent-color: #b36d7e;
+            --dark-color: #8a5565;
+            --light-color: #fff9fb;
+            --text-color: #333;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            --admin-color: #4a6fa5;
+        }
+        
+        body {
+            background-color: var(--light-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Admin Panel Styles */
+        .admin-panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .admin-panel.active {
+            display: block;
+        }
+        
+        .admin-header {
+            background: var(--admin-color);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .admin-content {
+            background: white;
+            border-radius: 10px;
+            max-width: 900px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+        
+        .admin-tabs {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .admin-tab {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            border-right: 1px solid #ddd;
+            font-weight: 500;
+        }
+        
+        .admin-tab.active {
+            background: white;
+            border-bottom: 3px solid var(--admin-color);
+        }
+        
+        .admin-section {
+            display: none;
+            padding: 2rem;
+        }
+        
+        .admin-section.active {
+            display: block;
+        }
+        
+        .admin-form {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .form-group label {
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group textarea, .form-group select {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .admin-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: var(--accent-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--dark-color);
+        }
+        
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        
+        .btn-admin {
+            background: var(--admin-color);
+            color: white;
+        }
+        
+        .btn-admin:hover {
+            background: #3a5a8a;
+        }
+        
+        .service-edit-item {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .service-edit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .price-input-group {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .price-input-group input {
+            width: 100%;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 1.5rem 0;
+            text-align: center;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* СКРЫТАЯ КНОПКА АДМИНИСТРАТОРА - теперь доступна только по секретному URL */
+        .admin-secret-access {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            background: rgba(74, 111, 165, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+        
+        .admin-secret-access:hover {
+            background: rgba(74, 111, 165, 0.3);
+        }
+        
+        .admin-secret-access.show {
+            opacity: 1;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .logo span {
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--dark-color);
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--dark-color);
+            font-weight: 500;
+        }
+        
+        /* Hero section */
+        .hero {
+            padding: 4rem 0;
+            background: url('https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+            position: relative;
+            color: white;
+            text-align: center;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(139, 85, 101, 0.85);
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        /* Services */
+        .services {
+            padding: 5rem 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            color: var(--dark-color);
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent-color);
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .service-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .service-header {
+            background: linear-gradient(to right, var(--secondary-color), var(--accent-color));
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .service-header h3 {
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+        
+        .service-body {
+            padding: 1.5rem;
+        }
+        
+        .service-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px dashed #eee;
+        }
+        
+        .service-item:last-child {
+            border-bottom: none;
+        }
+        
+        .service-name {
+            font-weight: 500;
+        }
+        
+        .service-price {
+            color: var(--accent-color);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .service-note {
+            margin-top: 1rem;
+            font-style: italic;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 3rem 0 2rem;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .social-link {
+            color: white;
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+        
+        .social-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .copyright {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .contact-info {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            
+            .header-top {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .admin-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .admin-tab {
+                flex: 1;
+                min-width: 120px;
+                text-align: center;
+            }
+        }
+        
+        /* Decorative elements */
+        .floral-decoration {
+            position: absolute;
+            opacity: 0.1;
+            font-size: 10rem;
+            color: var(--dark-color);
+            z-index: 1;
+        }
+        
+        .decoration-1 {
+            top: -30px;
+            left: 5%;
+        }
+        
+        .decoration-2 {
+            bottom: -40px;
+            right: 10%;
+        }
+        
+        /* Admin Login Modal */
+        .admin-login-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .admin-login-modal.active {
+            display: flex;
+        }
+        
+        .login-form {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+        }
+        
+        .login-form h3 {
+            margin-bottom: 1.5rem;
+            color: var(--admin-color);
+            text-align: center;
+        }
+        
+        .password-hint {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+        
+        /* Secret admin trigger - скрытая область для доступа к админке */
+        .secret-admin-trigger {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 50px;
+            height: 50px;
+            z-index: 999;
+        }
+        
+        /* Contact Section */
+        .contact-section {
+            background-color: var(--primary-color);
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .contact-section .section-title {
+            color: var(--dark-color);
+        }
+        
+        .contact-info-large {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .contact-item-large {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            min-width: 250px;
+        }
+        
+        .contact-icon {
+            font-size: 2rem;
+            color: var(--accent-color);
+        }
+        
+        .contact-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- Секретная область для доступа к админке -->
+    <div class="secret-admin-trigger" id="secretTrigger"></div>
+    
+    <!-- Admin Login Modal -->
+    <div class="admin-login-modal" id="adminLoginModal">
+        <div class="login-form">
+            <h3>Вход в административную панель</h3>
+            <div class="form-group">
+                <label for="adminPassword">Пароль администратора:</label>
+                <input type="password" id="adminPassword" placeholder="Введите пароль">
+                <p class="password-hint">Подсказка: пароль "admin123"</p>
+            </div>
+            <div class="admin-buttons">
+                <button class="btn btn-primary" id="loginBtn">Войти</button>
+                <button class="btn btn-secondary" id="cancelLoginBtn">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-content">
+            <div class="admin-header">
+                <h2>Административная панель</h2>
+                <button class="btn btn-secondary" id="closeAdminBtn">Закрыть</button>
+            </div>
+            
+            <div class="admin-tabs">
+                <div class="admin-tab active" data-tab="services">Услуги и цены</div>
+                <div class="admin-tab" data-tab="content">Контент сайта</div>
+                <div class="admin-tab" data-tab="images">Изображения</div>
+            </div>
+            
+            <!-- Services Tab -->
+            <div class="admin-section active" id="servicesTab">
+                <h3>Редактирование услуг и цен</h3>
+                <p class="service-note" style="margin-bottom: 1.5rem;">Измените данные и нажмите "Сохранить изменения"</p>
+                
+                <div id="servicesEditor">
+                    <!-- Services will be dynamically loaded here -->
+                </div>
+                
+                <div class="admin-buttons">
+                    <button class="btn btn-primary" id="saveServicesBtn">Сохранить изменения</button>
+                    <button class="btn btn-secondary" id="addServiceBtn">Добавить новую услугу</button>
+                </div>
+            </div>
+            
+            <!-- Content Tab -->
+            <div class="admin-section" id="contentTab">
+                <h3>Редактирование контента сайта</h3>
+                
+                <div class="admin-form">
+                    <div class="form-group">
+                        <label for="siteTitle">Название сайта:</label>
+                        <input type="text" id="siteTitle" value="Косметолог Elena">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="siteSubtitle">Подзаголовок:</label>
+                        <input type="text" id="siteSubtitle" value="ПРОФЕССИОНАЛЬНЫЙ УХОД ЗА КОЖЕЙ">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="heroTitle">Заголовок на главной:</label>
+                        <input type="text" id="heroTitle" value="Эстетика и здоровье вашей кожи">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="heroText">Текст на главной:</label>
+                        <textarea id="heroText">Профессиональные косметологические услуги с индивидуальным подходом к каждому клиенту. Современные методики, качественные препараты и видимый результат.</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contactPhone">Телефон:</label>
+                        <input type="text" id="contactPhone" value="+7 (XXX) XXX-XX-XX">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contactAddress">Адрес:</label>
+                        <input type="text" id="contactAddress" value="Ваш город, ул. Косметологическая, 10">
+                    </div>
+                </div>
+                
+                <div class="admin-buttons">
+                    <button class="btn btn-primary" id="saveContentBtn">Сохранить изменения</button>
+                </div>
+            </div>
+            
+            <!-- Images Tab -->
+            <div class="admin-section" id="imagesTab">
+                <h3>Управление изображениями</h3>
+                
+                <div class="admin-form">
+                    <div class="form-group">
+                        <label for="heroImageUrl">URL фонового изображения (главная):</label>
+                        <input type="text" id="heroImageUrl" value="https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+                        <p class="password-hint">Вставьте прямую ссылку на изображение</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Предпросмотр:</label>
+                        <div id="imagePreview" style="width: 100%; height: 200px; background-size: cover; background-position: center; border-radius: 8px; margin-top: 10px; border: 1px solid #ddd;"></div>
+                    </div>
+                </div>
+                
+                <div class="admin-buttons">
+                    <button class="btn btn-primary" id="saveImageBtn">Обновить изображение</button>
+                    <button class="btn btn-secondary" id="resetImageBtn">Сбросить к исходному</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Website -->
+    <header>
+        <div class="floral decoration-1">✿</div>
+        <div class="floral decoration-2">✿</div>
+        <div class="container">
+            <!-- Скрытая кнопка администратора - видна только при нажатии на секретную область -->
+            <div class="admin-secret-access" id="adminSecretAccess" title="Доступ к админ-панели">
+                <i class="fas fa-lock"></i>
+            </div>
+            <div class="header-content">
+                <h1 class="logo" id="siteTitle">Косметолог <span>Elena</span></h1>
+                <p class="subtitle" id="siteSubtitle">ПРОФЕССИОНАЛЬНЫЙ УХОД ЗА КОЖЕЙ</p>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-phone-alt"></i>
+                        <span id="contactPhoneDisplay">+7 (XXX) XXX-XX-XX</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span id="contactAddressDisplay">Ваш город, ул. Косметологическая, 10</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="heroSection">
+        <div class="container hero-content">
+            <h1 id="heroTitle">Эстетика и здоровье вашей кожи</h1>
+            <p id="heroText">Профессиональные косметологические услуги с индивидуальным подходом к каждому клиенту. Современные методики, качественные препараты и видимый результат.</p>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <h2 class="section-title">Прайс-лист услуг</h2>
+            
+            <div class="services-grid" id="servicesGrid">
+                <!-- Services will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section (вместо QR-кода) -->
+    <section class="contact-section">
+        <div class="container">
+            <h2 class="section-title">Контакты и запись</h2>
+            
+            <div class="contact-info-large">
+                <div class="contact-item-large">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <div class="contact-text" id="contactPhoneLarge">+7 (XXX) XXX-XX-XX</div>
+                    <p>Звоните для консультации и записи</p>
+                </div>
+                
+                <div class="contact-item-large">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="contact-text" id="contactAddressLarge">Ваш город, ул. Косметологическая, 10</div>
+                    <p>Приходите на процедуры</p>
+                </div>
+                
+                <div class="contact-item-large">
+                    <div class="contact-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="contact-text">Ежедневно 9:00 - 20:00</div>
+                    <p>Работаем без выходных</p>
+                </div>
+            </div>
+            
+            <p style="margin-top: 2rem; font-size: 1.1rem; color: var(--dark-color);">
+                Запишитесь на консультацию и подберем индивидуальную программу ухода за вашей кожей
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <h3 id="footerTitle">Косметолог Elena</h3>
+            <p>Профессиональный уход за кожей лица и тела</p>
+            
+            <div class="social-links">
+                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
+                <a href="#" class="social-link"><i class="fas fa-envelope"></i></a>
+            </div>
+            
+            <div class="contact-info" style="color: white;">
+                <div class="contact-item">
+                    <i class="fas fa-phone-alt"></i>
+                    <span id="footerPhone">+7 (XXX) XXX-XX-XX</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span id="footerAddress">Ваш город, ул. Косметологическая, 10</span>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; <span id="currentYear">2023</span> Косметолог Elena. Все права защищены.</p>
+                <p>Сайт создан для удобного ознакомления с услугами и ценами.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Admin password - ИЗМЕНИТЕ ЭТОТ ПАРОЛЬ!
+        const ADMIN_PASSWORD = "admin123";
+        
+        // Секретный код для доступа к админке
+        const SECRET_CODE = "admin";
+        
+        // Services data structure
+        let servicesData = [
+            {
+                category: "Чистка лица",
+                services: [
+                    { name: "Чистка гигиеническая (мануальная/аппаратная)", price: "—" },
+                    { name: "Чистка лечебная (стоп акне)", price: "—" },
+                    { name: "Чистка спины", price: "—" },
+                    { name: "Чистка + карбокситерапия", price: "—" },
+                    { name: "Чистка + ферментотерапия", price: "—" }
+                ],
+                note: "Цены уточняйте при записи"
+            },
+            {
+                category: "Пилинги и уход",
+                services: [
+                    { name: "Азелаиновый пилинг", price: "80₽" },
+                    { name: "Фитиновый пилинг", price: "80₽" },
+                    { name: "Пилинг Джесснера (1 слой)", price: "85₽" },
+                    { name: "Пилинг Джесснера (2-3 слоя)", price: "100₽" },
+                    { name: "Ретинол", price: "150₽" },
+                    { name: "PRX-T33", price: "150₽" },
+                    { name: "Exo-peel/Biorepeel", price: "130₽" }
+                ]
+            },
+            {
+                category: "Программы и эпиляция",
+                services: [
+                    { name: 'Программа "стоп акне"', price: "95₽" },
+                    { name: 'Программа "стоп розацеа"', price: "95₽" },
+                    { name: "Микроиндилянт: надбровная зона", price: "70₽" },
+                    { name: "Микроиндилянт: лицо", price: "120₽" },
+                    { name: "Микроиндилянт: лицо+шея", price: "170₽" },
+                    { name: "Микроиндилянт: лицо+шея+декольте", price: "210₽" },
+                    { name: "Мезопил", price: "от 150₽" }
+                ]
+            }
+        ];
+        
+        // Site content data
+        let siteContent = {
+            title: "Косметолог Elena",
+            subtitle: "ПРОФЕССИОНАЛЬНЫЙ УХОД ЗА КОЖЕЙ",
+            heroTitle: "Эстетика и здоровье вашей кожи",
+            heroText: "Профессиональные косметологические услуги с индивидуальным подходом к каждому клиенту. Современные методики, качественные препараты и видимый результат.",
+            phone: "+7 (XXX) XXX-XX-XX",
+            address: "Ваш город, ул. Косметологическая, 10",
+            heroImage: "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
+        };
+        
+        // DOM elements
+        const adminLoginModal = document.getElementById('adminLoginModal');
+        const adminPanel = document.getElementById('adminPanel');
+        const adminPasswordInput = document.getElementById('adminPassword');
+        const loginBtn = document.getElementById('loginBtn');
+        const cancelLoginBtn = document.getElementById('cancelLoginBtn');
+        const adminSecretAccess = document.getElementById('adminSecretAccess');
+        const secretTrigger = document.getElementById('secretTrigger');
+        const closeAdminBtn = document.getElementById('closeAdminBtn');
+        const adminTabs = document.querySelectorAll('.admin-tab');
+        const adminSections = document.querySelectorAll('.admin-section');
+        const servicesEditor = document.getElementById('servicesEditor');
+        const servicesGrid = document.getElementById('servicesGrid');
+        const saveServicesBtn = document.getElementById('saveServicesBtn');
+        const addServiceBtn = document.getElementById('addServiceBtn');
+        const saveContentBtn = document.getElementById('saveContentBtn');
+        const saveImageBtn = document.getElementById('saveImageBtn');
+        const resetImageBtn = document.getElementById('resetImageBtn');
+        const heroImageUrlInput = document.getElementById('heroImageUrl');
+        const imagePreview = document.getElementById('imagePreview');
+        
+        // Переменные для секретного доступа
+        let secretInput = '';
+        let secretTimer = null;
+        
+        // Initialize the site
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load services on the main page
+            renderServices();
+            
+            // Load services in admin panel
+            renderServicesEditor();
+            
+            // Update image preview
+            updateImagePreview();
+            
+            // Set current year
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            
+            // Set contact information
+            updateContactInfo();
+            
+            // Load saved content from localStorage if available
+            loadSavedContent();
+            
+            // Скрыть админ-панель при загрузке
+            adminPanel.classList.remove('active');
+            adminLoginModal.classList.remove('active');
+        });
+        
+        // Render services on the main page
+        function renderServices() {
+            servicesGrid.innerHTML = '';
+            
+            servicesData.forEach(category => {
+                const card = document.createElement('div');
+                card.className = 'service-card';
+                
+                let servicesHTML = '';
+                category.services.forEach(service => {
+                    servicesHTML += `
+                        <div class="service-item">
+                            <span class="service-name">${service.name}</span>
+                            <span class="service-price">${service.price}</span>
+                        </div>
+                    `;
+                });
+                
+                card.innerHTML = `
+                    <div class="service-header">
+                        <h3>${category.category}</h3>
+                    </div>
+                    <div class="service-body">
+                        ${servicesHTML}
+                        ${category.note ? `<p class="service-note">${category.note}</p>` : ''}
+                    </div>
+                `;
+                
+                servicesGrid.appendChild(card);
+            });
+        }
+        
+        // Render services editor in admin panel
+        function renderServicesEditor() {
+            servicesEditor.innerHTML = '';
+            
+            servicesData.forEach((category, catIndex) => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'service-edit-item';
+                
+                let servicesHTML = '';
+                category.services.forEach((service, servIndex) => {
+                    servicesHTML += `
+                        <div class="price-input-group">
+                            <input type="text" class="service-name-input" data-cat="${catIndex}" data-serv="${servIndex}" value="${service.name}" placeholder="Название услуги">
+                            <input type="text" class="service-price-input" data-cat="${catIndex}" data-serv="${servIndex}" value="${service.price}" placeholder="Цена">
+                        </div>
+                    `;
+                });
+                
+                categoryDiv.innerHTML = `
+                    <div class="service-edit-header">
+                        <h4>${category.category}</h4>
+                        <button class="btn btn-secondary btn-small remove-category-btn" data-cat="${catIndex}">Удалить категорию</button>
+                    </div>
+                    <div class="admin-form">
+                        <div class="form-group">
+                            <label>Название категории:</label>
+                            <input type="text" class="category-name-input" data-cat="${catIndex}" value="${category.category}">
+                        </div>
+                        <div class="form-group">
+                            <label>Примечание (необязательно):</label>
+                            <input type="text" class="category-note-input" data-cat="${catIndex}" value="${category.note || ''}" placeholder="Например: Цены уточняйте при записи">
+                        </div>
+                        <div class="form-group">
+                            <label>Услуги в категории:</label>
+                            ${servicesHTML}
+                        </div>
+                        <button class="btn btn-secondary add-service-btn" data-cat="${catIndex}">+ Добавить услугу в эту категорию</button>
+                    </div>
+                `;
+                
+                servicesEditor.appendChild(categoryDiv);
+            });
+            
+            // Add event listeners to dynamically created buttons
+            document.querySelectorAll('.remove-category-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const catIndex = parseInt(this.getAttribute('data-cat'));
+                    if (confirm('Удалить эту категорию?')) {
+                        servicesData.splice(catIndex, 1);
+                        renderServicesEditor();
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.add-service-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const catIndex = parseInt(this.getAttribute('data-cat'));
+                    servicesData[catIndex].services.push({ name: "Новая услуга", price: "0₽" });
+                    renderServicesEditor();
+                });
+            });
+            
+            // Add event listeners to inputs
+            document.querySelectorAll('.category-name-input').forEach(input => {
+                input.addEventListener('change', function() {
+                    const catIndex = parseInt(this.getAttribute('data-cat'));
+                    servicesData[catIndex].category = this.value;
+                });
+            });
+            
+            document.querySelectorAll('.category-note-input').forEach(input => {
+                input.addEventListener('change', function() {
+                    const catIndex = parseInt(this.getAttribute('data-cat'));
+                    servicesData[catIndex].note = this.value;
+                });
+            });
+            
+            document.querySelectorAll('.service-name-input').forEach(input => {
+                input.addEventListener('change', function() {
+                    const catIndex = parseInt(this.getAttribute('data-cat'));
+                    const servIndex = parseInt(this.getAttribute('data-serv'));
+                    servicesData[catIndex].services[servIndex].name = this.value;
+                });
+            });
+            
+            document.querySelectorAll('.service-price-input').forEach(input => {
+                input.addEventListener('change', function() {
+                    const catIndex = parseInt(this.getAttribute('data-cat'));
+                    const servIndex = parseInt(this.getAttribute('data-serv'));
+                    servicesData[catIndex].services[servIndex].price = this.value;
+                });
+            });
+        }
+        
+        // Update image preview
+        function updateImagePreview() {
+            imagePreview.style.backgroundImage = `url('${heroImageUrlInput.value}')`;
+        }
+        
+        // Update contact information
+        function updateContactInfo() {
+            document.getElementById('contactPhoneLarge').textContent = siteContent.phone;
+            document.getElementById('contactAddressLarge').textContent = siteContent.address;
+        }
+        
+        // Load saved content from localStorage
+        function loadSavedContent() {
+            const savedServices = localStorage.getItem('cosmetologServices');
+            const savedContent = localStorage.getItem('cosmetologContent');
+            
+            if (savedServices) {
+                servicesData = JSON.parse(savedServices);
+                renderServices();
+                renderServicesEditor();
+            }
+            
+            if (savedContent) {
+                siteContent = JSON.parse(savedContent);
+                
+                // Update website content
+                document.getElementById('siteTitle').innerHTML = `Косметолог <span>${siteContent.title.split(' ')[1] || 'Elena'}</span>`;
+                document.getElementById('siteSubtitle').textContent = siteContent.subtitle;
+                document.getElementById('heroTitle').textContent = siteContent.heroTitle;
+                document.getElementById('heroText').textContent = siteContent.heroText;
+                document.getElementById('contactPhoneDisplay').textContent = siteContent.phone;
+                document.getElementById('contactAddressDisplay').textContent = siteContent.address;
+                document.getElementById('footerTitle').textContent = siteContent.title;
+                document.getElementById('footerPhone').textContent = siteContent.phone;
+                document.getElementById('footerAddress').textContent = siteContent.address;
+                document.getElementById('heroSection').style.backgroundImage = `url('${siteContent.heroImage}')`;
+                
+                // Update contact section
+                updateContactInfo();
+                
+                // Update admin panel inputs
+                document.getElementById('siteTitle').value = siteContent.title;
+                document.getElementById('siteSubtitle').value = siteContent.subtitle;
+                document.getElementById('heroTitle').value = siteContent.heroTitle;
+                document.getElementById('heroText').value = siteContent.heroText;
+                document.getElementById('contactPhone').value = siteContent.phone;
+                document.getElementById('contactAddress').value = siteContent.address;
+                document.getElementById('heroImageUrl').value = siteContent.heroImage;
+                
+                updateImagePreview();
+            }
+        }
+        
+        // Save content to localStorage
+        function saveContent() {
+            localStorage.setItem('cosmetologServices', JSON.stringify(servicesData));
+            localStorage.setItem('cosmetologContent', JSON.stringify(siteContent));
+        }
+        
+        // Секретный доступ к админке
+        function setupSecretAccess() {
+            // Слушаем нажатия клавиш для секретного кода
+            document.addEventListener('keydown', function(e) {
+                secretInput += e.key.toLowerCase();
+                
+                // Очищаем ввод через 3 секунды
+                if (secretTimer) {
+                    clearTimeout(secretTimer);
+                }
+                
+                secretTimer = setTimeout(() => {
+                    secretInput = '';
+                }, 3000);
+                
+                // Проверяем, если введен секретный код
+                if (secretInput.includes(SECRET_CODE)) {
+                    // Показываем скрытую кнопку администратора
+                    adminSecretAccess.classList.add('show');
+                    secretInput = '';
+                    
+                    // Автоматически скрываем через 10 секунд
+                    setTimeout(() => {
+                        adminSecretAccess.classList.remove('show');
+                    }, 10000);
+                }
+            });
+            
+            // Клик по секретной области в левом верхнем углу
+            secretTrigger.addEventListener('click', function(e) {
+                // Показываем скрытую кнопку администратора
+                adminSecretAccess.classList.add('show');
+                
+                // Автоматически скрываем через 10 секунд
+                setTimeout(() => {
+                    adminSecretAccess.classList.remove('show');
+                }, 10000);
+            });
+            
+            // Клик по скрытой кнопке администратора
+            adminSecretAccess.addEventListener('click', function() {
+                adminLoginModal.classList.add('active');
+                this.classList.remove('show');
+            });
+        }
+        
+        // Event Listeners
+        
+        // Настройка секретного доступа
+        setupSecretAccess();
+        
+        // Login button
+        loginBtn.addEventListener('click', function() {
+            if (adminPasswordInput.value === ADMIN_PASSWORD) {
+                adminLoginModal.classList.remove('active');
+                adminPanel.classList.add('active');
+                adminPasswordInput.value = '';
+            } else {
+                alert('Неверный пароль! Попробуйте снова.');
+            }
+        });
+        
+        // Cancel login
+        cancelLoginBtn.addEventListener('click', function() {
+            adminLoginModal.classList.remove('active');
+            adminPasswordInput.value = '';
+        });
+        
+        // Close admin panel
+        closeAdminBtn.addEventListener('click', function() {
+            adminPanel.classList.remove('active');
+        });
+        
+        // Admin tabs
+        adminTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                
+                // Update active tab
+                adminTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show corresponding section
+                adminSections.forEach(section => {
+                    section.classList.remove('active');
+                    if (section.id === tabId + 'Tab') {
+                        section.classList.add('active');
+                    }
+                });
+            });
+        });
+        
+        // Save services
+        saveServicesBtn.addEventListener('click', function() {
+            saveContent();
+            renderServices();
+            alert('Изменения в услугах сохранены!');
+        });
+        
+        // Add new service category
+        addServiceBtn.addEventListener('click', function() {
+            servicesData.push({
+                category: "Новая категория",
+                services: [
+                    { name: "Пример услуги", price: "100₽" }
+                ]
+            });
+            renderServicesEditor();
+        });
+        
+        // Save content changes
+        saveContentBtn.addEventListener('click', function() {
+            // Update site content object
+            siteContent.title = document.getElementById('siteTitle').value;
+            siteContent.subtitle = document.getElementById('siteSubtitle').value;
+            siteContent.heroTitle = document.getElementById('heroTitle').value;
+            siteContent.heroText = document.getElementById('heroText').value;
+            siteContent.phone = document.getElementById('contactPhone').value;
+            siteContent.address = document.getElementById('contactAddress').value;
+            
+            // Update website
+            document.getElementById('siteTitle').innerHTML = `Косметолог <span>${siteContent.title.split(' ')[1] || 'Elena'}</span>`;
+            document.getElementById('siteSubtitle').textContent = siteContent.subtitle;
+            document.getElementById('heroTitle').textContent = siteContent.heroTitle;
+            document.getElementById('heroText').textContent = siteContent.heroText;
+            document.getElementById('contactPhoneDisplay').textContent = siteContent.phone;
+            document.getElementById('contactAddressDisplay').textContent = siteContent.address;
+            document.getElementById('footerTitle').textContent = siteContent.title;
+            document.getElementById('footerPhone').textContent = siteContent.phone;
+            document.getElementById('footerAddress').textContent = siteContent.address;
+            
+            // Update contact section
+            updateContactInfo();
+            
+            saveContent();
+            alert('Изменения в контенте сохранены!');
+        });
+        
+        // Save image changes
+        saveImageBtn.addEventListener('click', function() {
+            siteContent.heroImage = heroImageUrlInput.value;
+            document.getElementById('heroSection').style.backgroundImage = `url('${siteContent.heroImage}')`;
+            updateImagePreview();
+            saveContent();
+            alert('Изображение обновлено!');
+        });
+        
+        // Reset image
+        resetImageBtn.addEventListener('click', function() {
+            const defaultImage = "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80";
+            heroImageUrlInput.value = defaultImage;
+            siteContent.heroImage = defaultImage;
+            document.getElementById('heroSection').style.backgroundImage = `url('${defaultImage}')`;
+            updateImagePreview();
+            saveContent();
+            alert('Изображение сброшено к исходному!');
+        });
+        
+        // Update image preview on URL change
+        heroImageUrlInput.addEventListener('input', updateImagePreview);
+        
+        // Close modals on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                adminLoginModal.classList.remove('active');
+                adminPanel.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
