@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Косметолог | Услуги и цены</title>
+    <title>Elena Cosmetology | Услуги и цены</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -22,6 +22,8 @@
             --text-color: #333;
             --shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             --admin-color: #4a6fa5;
+            --success-color: #4CAF50;
+            --warning-color: #ff9800;
         }
         
         body {
@@ -44,7 +46,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.95);
             z-index: 1000;
             overflow-y: auto;
             padding: 20px;
@@ -71,6 +73,7 @@
             max-width: 900px;
             margin: 0 auto;
             overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
         
         .admin-tabs {
@@ -84,6 +87,13 @@
             cursor: pointer;
             border-right: 1px solid #ddd;
             font-weight: 500;
+            flex: 1;
+            text-align: center;
+            transition: background 0.3s;
+        }
+        
+        .admin-tab:hover {
+            background: #e8e8e8;
         }
         
         .admin-tab.active {
@@ -113,6 +123,7 @@
         
         .form-group label {
             font-weight: 500;
+            color: #555;
         }
         
         .form-group input, .form-group textarea, .form-group select {
@@ -120,6 +131,13 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: var(--admin-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.1);
         }
         
         .form-group textarea {
@@ -130,7 +148,10 @@
         .admin-buttons {
             display: flex;
             gap: 1rem;
-            margin-top: 1.5rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+            flex-wrap: wrap;
         }
         
         .btn {
@@ -140,6 +161,9 @@
             cursor: pointer;
             font-weight: 500;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
         .btn-primary {
@@ -149,6 +173,8 @@
         
         .btn-primary:hover {
             background: var(--dark-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         
         .btn-secondary {
@@ -158,6 +184,17 @@
         
         .btn-secondary:hover {
             background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #45a049;
+            transform: translateY(-2px);
         }
         
         .btn-admin {
@@ -167,6 +204,7 @@
         
         .btn-admin:hover {
             background: #3a5a8a;
+            transform: translateY(-2px);
         }
         
         .service-edit-item {
@@ -205,14 +243,7 @@
             overflow: hidden;
         }
         
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        
-        /* СКРЫТАЯ КНОПКА АДМИНИСТРАТОРА - теперь доступна только по секретному URL */
+        /* СКРЫТАЯ КНОПКА АДМИНИСТРАТОРА */
         .admin-secret-access {
             position: absolute;
             top: 10px;
@@ -227,6 +258,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             opacity: 0;
+            z-index: 100;
         }
         
         .admin-secret-access:hover {
@@ -235,6 +267,13 @@
         
         .admin-secret-access.show {
             opacity: 1;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
         
         .logo {
@@ -455,39 +494,14 @@
                 gap: 0.8rem;
             }
             
-            .header-top {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
             .admin-tabs {
-                flex-wrap: wrap;
+                flex-direction: column;
             }
             
             .admin-tab {
-                flex: 1;
-                min-width: 120px;
-                text-align: center;
+                border-right: none;
+                border-bottom: 1px solid #ddd;
             }
-        }
-        
-        /* Decorative elements */
-        .floral-decoration {
-            position: absolute;
-            opacity: 0.1;
-            font-size: 10rem;
-            color: var(--dark-color);
-            z-index: 1;
-        }
-        
-        .decoration-1 {
-            top: -30px;
-            left: 5%;
-        }
-        
-        .decoration-2 {
-            bottom: -40px;
-            right: 10%;
         }
         
         /* Admin Login Modal */
@@ -498,10 +512,16 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.9);
             z-index: 1001;
             align-items: center;
             justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         
         .admin-login-modal.active {
@@ -514,6 +534,13 @@
             border-radius: 10px;
             width: 90%;
             max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
         
         .login-form h3 {
@@ -529,7 +556,7 @@
             font-style: italic;
         }
         
-        /* Secret admin trigger - скрытая область для доступа к админке */
+        /* Secret admin trigger */
         .secret-admin-trigger {
             position: fixed;
             top: 0;
@@ -553,7 +580,7 @@
         .contact-info-large {
             display: flex;
             justify-content: center;
-            gap: 3rem;
+            gap: 2rem;
             margin-top: 2rem;
             flex-wrap: wrap;
         }
@@ -579,9 +606,113 @@
             font-size: 1.1rem;
             font-weight: 500;
         }
+        
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 5px;
+            color: white;
+            font-weight: 500;
+            z-index: 10000;
+            animation: slideInRight 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .notification-success {
+            background: var(--success-color);
+        }
+        
+        .notification-warning {
+            background: var(--warning-color);
+        }
+        
+        .notification-info {
+            background: var(--admin-color);
+        }
+        
+        .notification-error {
+            background: #f44336;
+        }
+        
+        /* Loading overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 1rem;
+            color: white;
+        }
+        
+        .loading-overlay.active {
+            display: flex;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Instructions for admin */
+        .admin-instructions {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .admin-instructions h4 {
+            margin-top: 0;
+            color: var(--admin-color);
+        }
+        
+        .admin-instructions ul {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+        }
+        
+        .admin-instructions li {
+            margin-bottom: 0.5rem;
+        }
     </style>
 </head>
 <body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div id="loadingText">Загрузка...</div>
+    </div>
+    
+    <!-- Notifications -->
+    <div id="notificationsContainer"></div>
+    
     <!-- Секретная область для доступа к админке -->
     <div class="secret-admin-trigger" id="secretTrigger"></div>
     
@@ -591,12 +722,16 @@
             <h3>Вход в административную панель</h3>
             <div class="form-group">
                 <label for="adminPassword">Пароль администратора:</label>
-                <input type="password" id="adminPassword" placeholder="Введите пароль">
-                <p class="password-hint">Подсказка: пароль "admin123"</p>
+                <input type="password" id="adminPassword" placeholder="Введите пароль" autocomplete="off">
+                <p class="password-hint">Пароль по умолчанию: "admin123"</p>
             </div>
             <div class="admin-buttons">
-                <button class="btn btn-primary" id="loginBtn">Войти</button>
-                <button class="btn btn-secondary" id="cancelLoginBtn">Отмена</button>
+                <button class="btn btn-primary" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Войти
+                </button>
+                <button class="btn btn-secondary" id="cancelLoginBtn">
+                    <i class="fas fa-times"></i> Отмена
+                </button>
             </div>
         </div>
     </div>
@@ -605,19 +740,37 @@
     <div class="admin-panel" id="adminPanel">
         <div class="admin-content">
             <div class="admin-header">
-                <h2>Административная панель</h2>
-                <button class="btn btn-secondary" id="closeAdminBtn">Закрыть</button>
+                <h2><i class="fas fa-cogs"></i> Административная панель</h2>
+                <button class="btn btn-secondary" id="closeAdminBtn">
+                    <i class="fas fa-times"></i> Закрыть
+                </button>
             </div>
             
             <div class="admin-tabs">
-                <div class="admin-tab active" data-tab="services">Услуги и цены</div>
-                <div class="admin-tab" data-tab="content">Контент сайта</div>
-                <div class="admin-tab" data-tab="images">Изображения</div>
+                <div class="admin-tab active" data-tab="services">
+                    <i class="fas fa-list-alt"></i> Услуги и цены
+                </div>
+                <div class="admin-tab" data-tab="content">
+                    <i class="fas fa-edit"></i> Контент сайта
+                </div>
+                <div class="admin-tab" data-tab="images">
+                    <i class="fas fa-images"></i> Изображения
+                </div>
+            </div>
+            
+            <!-- Instructions -->
+            <div class="admin-instructions">
+                <h4><i class="fas fa-info-circle"></i> Как работают изменения:</h4>
+                <ul>
+                    <li>Изменения сохраняются в браузере всех посетителей</li>
+                    <li>После сохранения обновите страницу (F5) чтобы увидеть изменения</li>
+                    <li>Новые посетители увидят изменения сразу</li>
+                </ul>
             </div>
             
             <!-- Services Tab -->
             <div class="admin-section active" id="servicesTab">
-                <h3>Редактирование услуг и цен</h3>
+                <h3><i class="fas fa-list-alt"></i> Редактирование услуг и цен</h3>
                 <p class="service-note" style="margin-bottom: 1.5rem;">Измените данные и нажмите "Сохранить изменения"</p>
                 
                 <div id="servicesEditor">
@@ -625,72 +778,93 @@
                 </div>
                 
                 <div class="admin-buttons">
-                    <button class="btn btn-primary" id="saveServicesBtn">Сохранить изменения</button>
-                    <button class="btn btn-secondary" id="addServiceBtn">Добавить новую услугу</button>
+                    <button class="btn btn-success" id="saveServicesBtn">
+                        <i class="fas fa-save"></i> Сохранить изменения
+                    </button>
+                    <button class="btn btn-primary" id="addServiceBtn">
+                        <i class="fas fa-plus"></i> Добавить категорию
+                    </button>
+                    <button class="btn btn-secondary" id="exportDataBtn">
+                        <i class="fas fa-download"></i> Экспорт данных
+                    </button>
                 </div>
             </div>
             
             <!-- Content Tab -->
             <div class="admin-section" id="contentTab">
-                <h3>Редактирование контента сайта</h3>
+                <h3><i class="fas fa-edit"></i> Редактирование контента сайта</h3>
                 
                 <div class="admin-form">
                     <div class="form-group">
-                        <label for="siteTitle">Название сайта:</label>
-                        <input type="text" id="siteTitle" value="Косметолог Elena">
+                        <label for="siteTitle"><i class="fas fa-heading"></i> Название сайта:</label>
+                        <input type="text" id="siteTitle" value="Elena Cosmetology">
                     </div>
                     
                     <div class="form-group">
-                        <label for="siteSubtitle">Подзаголовок:</label>
+                        <label for="siteSubtitle"><i class="fas fa-subscript"></i> Подзаголовок:</label>
                         <input type="text" id="siteSubtitle" value="ПРОФЕССИОНАЛЬНЫЙ УХОД ЗА КОЖЕЙ">
                     </div>
                     
                     <div class="form-group">
-                        <label for="heroTitle">Заголовок на главной:</label>
+                        <label for="heroTitle"><i class="fas fa-heading"></i> Заголовок на главной:</label>
                         <input type="text" id="heroTitle" value="Эстетика и здоровье вашей кожи">
                     </div>
                     
                     <div class="form-group">
-                        <label for="heroText">Текст на главной:</label>
+                        <label for="heroText"><i class="fas fa-paragraph"></i> Текст на главной:</label>
                         <textarea id="heroText">Профессиональные косметологические услуги с индивидуальным подходом к каждому клиенту. Современные методики, качественные препараты и видимый результат.</textarea>
                     </div>
                     
                     <div class="form-group">
-                        <label for="contactPhone">Телефон:</label>
-                        <input type="text" id="contactPhone" value="+375 (XX) XXX-XX-XX">
+                        <label for="contactPhone"><i class="fas fa-phone"></i> Телефон:</label>
+                        <input type="text" id="contactPhone" value="Запись через директ">
                     </div>
                     
                     <div class="form-group">
-                        <label for="contactAddress">Адрес:</label>
-                        <input type="text" id="contactAddress" value="Минск, ул. Косметологическая, 10">
+                        <label for="contactAddress"><i class="fas fa-map-marker-alt"></i> Адрес:</label>
+                        <input type="text" id="contactAddress" value="Минск, ст.м.Октябрьская, Янки Купалы 19">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="workingHours"><i class="fas fa-clock"></i> Часы работы:</label>
+                        <input type="text" id="workingHours" value="Ежедневно 9:00 - 20:00">
                     </div>
                 </div>
                 
                 <div class="admin-buttons">
-                    <button class="btn btn-primary" id="saveContentBtn">Сохранить изменения</button>
+                    <button class="btn btn-success" id="saveContentBtn">
+                        <i class="fas fa-save"></i> Сохранить изменения
+                    </button>
+                    <button class="btn btn-secondary" id="resetContentBtn">
+                        <i class="fas fa-undo"></i> Сбросить к исходному
+                    </button>
                 </div>
             </div>
             
             <!-- Images Tab -->
             <div class="admin-section" id="imagesTab">
-                <h3>Управление изображениями</h3>
+                <h3><i class="fas fa-images"></i> Управление изображениями</h3>
                 
                 <div class="admin-form">
                     <div class="form-group">
-                        <label for="heroImageUrl">URL фонового изображения (главная):</label>
+                        <label for="heroImageUrl"><i class="fas fa-image"></i> URL фонового изображения (главная):</label>
                         <input type="text" id="heroImageUrl" value="https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
-                        <p class="password-hint">Вставьте прямую ссылку на изображение</p>
+                        <p class="password-hint">Вставьте прямую ссылку на изображение. Можно найти на unsplash.com</p>
                     </div>
                     
                     <div class="form-group">
-                        <label>Предпросмотр:</label>
+                        <label><i class="fas fa-eye"></i> Предпросмотр:</label>
                         <div id="imagePreview" style="width: 100%; height: 200px; background-size: cover; background-position: center; border-radius: 8px; margin-top: 10px; border: 1px solid #ddd;"></div>
                     </div>
                 </div>
                 
                 <div class="admin-buttons">
-                    <button class="btn btn-primary" id="saveImageBtn">Обновить изображение</button>
-                    <button class="btn btn-secondary" id="resetImageBtn">Сбросить к исходному</button>
+                    <button class="btn btn-success" id="saveImageBtn">
+                        <i class="fas fa-save"></i> Обновить изображение
+                    </button>
+                    <button class="btn btn-secondary" id="resetImageBtn">
+                        <i class="fas fa-undo"></i> Сбросить к исходному
+                    </button>
                 </div>
             </div>
         </div>
@@ -698,24 +872,22 @@
 
     <!-- Main Website -->
     <header>
-        <div class="floral decoration-1">✿</div>
-        <div class="floral decoration-2">✿</div>
         <div class="container">
-            <!-- Скрытая кнопка администратора - видна только при нажатии на секретную область -->
+            <!-- Скрытая кнопка администратора -->
             <div class="admin-secret-access" id="adminSecretAccess" title="Доступ к админ-панели">
                 <i class="fas fa-lock"></i>
             </div>
             <div class="header-content">
-                <h1 class="logo" id="siteTitle">Косметолог <span>Elena</span></h1>
+                <h1 class="logo" id="siteTitle">Elena <span id="siteTitleName">Cosmetology</span></h1>
                 <p class="subtitle" id="siteSubtitle">ПРОФЕССИОНАЛЬНЫЙ УХОД ЗА КОЖЕЙ</p>
                 <div class="contact-info">
                     <div class="contact-item">
-                        <i class="fas fa-phone-alt"></i>
-                        <span id="contactPhoneDisplay">+375 (XX) XXX-XX-XX</span>
+                        <i class="fas fa-comment-alt"></i>
+                        <span id="contactPhoneDisplay">Запись через директ</span>
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-map-marker-alt"></i>
-                        <span id="contactAddressDisplay">Минск, ул. Косметологическая, 10</span>
+                        <span id="contactAddressDisplay">Минск, ст.м.Октябрьская, Янки Купалы 19</span>
                     </div>
                 </div>
             </div>
@@ -733,7 +905,7 @@
     <!-- Services Section -->
     <section class="services" id="services">
         <div class="container">
-            <h2 class="section-title">Прайс-лист услуг</h2>
+            <h2 class="section-title">PRICE LIST</h2>
             
             <div class="services-grid" id="servicesGrid">
                 <!-- Services will be loaded dynamically -->
@@ -741,7 +913,7 @@
         </div>
     </section>
 
-    <!-- Contact Section (вместо QR-кода) -->
+    <!-- Contact Section -->
     <section class="contact-section">
         <div class="container">
             <h2 class="section-title">Контакты и запись</h2>
@@ -749,17 +921,17 @@
             <div class="contact-info-large">
                 <div class="contact-item-large">
                     <div class="contact-icon">
-                        <i class="fas fa-phone-alt"></i>
+                        <i class="fas fa-comment-alt"></i>
                     </div>
-                    <div class="contact-text" id="contactPhoneLarge">+375 (XX) XXX-XX-XX</div>
-                    <p>Звоните для консультации и записи</p>
+                    <div class="contact-text" id="contactPhoneLarge">Для записи на консультацию и подбор процедуры пишите в директ</div>
+                    <p>Запись через Instagram Direct</p>
                 </div>
                 
                 <div class="contact-item-large">
                     <div class="contact-icon">
                         <i class="fas fa-map-marker-alt"></i>
                     </div>
-                    <div class="contact-text" id="contactAddressLarge">Минск, ул. Косметологическая, 10</div>
+                    <div class="contact-text" id="contactAddressLarge">Минск, ст.м.Октябрьская, Янки Купалы 19</div>
                     <p>Приходите на процедуры</p>
                 </div>
                 
@@ -767,7 +939,7 @@
                     <div class="contact-icon">
                         <i class="fas fa-clock"></i>
                     </div>
-                    <div class="contact-text">Ежедневно 9:00 - 20:00</div>
+                    <div class="contact-text" id="workingHoursDisplay">Ежедневно 9:00 - 20:00</div>
                     <p>Работаем без выходных</p>
                 </div>
             </div>
@@ -781,7 +953,7 @@
     <!-- Footer -->
     <footer>
         <div class="container footer-content">
-            <h3 id="footerTitle">Косметолог Elena</h3>
+            <h3 id="footerTitle">Elena <span id="footerTitleName">Cosmetology</span></h3>
             <p>Профессиональный уход за кожей лица и тела</p>
             
             <div class="social-links">
@@ -793,80 +965,81 @@
             
             <div class="contact-info" style="color: white;">
                 <div class="contact-item">
-                    <i class="fas fa-phone-alt"></i>
-                    <span id="footerPhone">+375 (XX) XXX-XX-XX</span>
+                    <i class="fas fa-comment-alt"></i>
+                    <span id="footerPhone">Запись через директ</span>
                 </div>
                 <div class="contact-item">
                     <i class="fas fa-map-marker-alt"></i>
-                    <span id="footerAddress">Минск, ул. Косметологическая, 10</span>
+                    <span id="footerAddress">Минск, ст.м.Октябрьская, Янки Купалы 19</span>
                 </div>
             </div>
             
             <div class="copyright">
-                <p>&copy; <span id="currentYear">2023</span> Косметолог Elena. Все права защищены.</p>
+                <p>&copy; <span id="currentYear">2023</span> Elena Cosmetology. Все права защищены.</p>
                 <p>Сайт создан для удобного ознакомления с услугами и ценами.</p>
             </div>
         </div>
     </footer>
 
     <script>
-        // Admin password - ИЗМЕНИТЕ ЭТОТ ПАРОЛЬ!
-        const ADMIN_PASSWORD = "admin123";
-        
-        // Секретный код для доступа к админке
+        // ==================== КОНФИГУРАЦИЯ ====================
+        const ADMIN_PASSWORD = "admin123"; // ИЗМЕНИТЕ ЭТОТ ПАРОЛЬ!
         const SECRET_CODE = "admin";
+        const VERSION = "1.0.0";
         
-        // Services data structure
-        let servicesData = [
-            {
-                category: "Чистка лица",
-                services: [
-                    { name: "Чистка гигиеническая (мануальная/аппаратная)", price: "—" },
-                    { name: "Чистка лечебная (стоп акне)", price: "—" },
-                    { name: "Чистка спины", price: "—" },
-                    { name: "Чистка + карбокситерапия", price: "—" },
-                    { name: "Чистка + ферментотерапия", price: "—" }
-                ],
-                note: "Цены уточняйте при записи"
+        // ==================== ДАННЫЕ САЙТА ====================
+        let siteData = {
+            version: VERSION,
+            lastUpdated: new Date().toISOString(),
+            siteContent: {
+                title: "Elena Cosmetology",
+                subtitle: "ПРОФЕССИОНАЛЬНЫЙ УХОД ЗА КОЖЕЙ",
+                heroTitle: "Эстетика и здоровье вашей кожи",
+                heroText: "Профессиональные косметологические услуги с индивидуальным подходом к каждому клиенту. Современные методики, качественные препараты и видимый результат.",
+                phone: "Запись через директ",
+                address: "Минск, ст.м.Октябрьская, Янки Купалы 19",
+                workingHours: "Ежедневно 9:00 - 20:00",
+                heroImage: "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
             },
-            {
-                category: "Пилинги и уход",
-                services: [
-                    { name: "Азелаиновый пилинг", price: "80₽" },
-                    { name: "Фитиновый пилинг", price: "80₽" },
-                    { name: "Пилинг Джесснера (1 слой)", price: "85₽" },
-                    { name: "Пилинг Джесснера (2-3 слоя)", price: "100₽" },
-                    { name: "Ретинол", price: "150₽" },
-                    { name: "PRX-T33", price: "150₽" },
-                    { name: "Exo-peel/Biorepeel", price: "130₽" }
-                ]
-            },
-            {
-                category: "Программы и эпиляция",
-                services: [
-                    { name: 'Программа "стоп акне"', price: "95₽" },
-                    { name: 'Программа "стоп розацеа"', price: "95₽" },
-                    { name: "Микроиндилянт: надбровная зона", price: "70₽" },
-                    { name: "Микроиндилянт: лицо", price: "120₽" },
-                    { name: "Микроиндилянт: лицо+шея", price: "170₽" },
-                    { name: "Микроиндилянт: лицо+шея+декольте", price: "210₽" },
-                    { name: "Мезопил", price: "от 150₽" }
-                ]
-            }
-        ];
-        
-        // Site content data
-        let siteContent = {
-            title: "Косметолог Elena",
-            subtitle: "ПРОФЕССИОНАЛЬНЫЙ УХОД ЗА КОЖЕЙ",
-            heroTitle: "Эстетика и здоровье вашей кожи",
-            heroText: "Профессиональные косметологические услуги с индивидуальным подходом к каждому клиенту. Современные методики, качественные препараты и видимый результат.",
-            phone: "+7 (XXX) XXX-XX-XX",
-            address: "Ваш город, ул. Косметологическая, 10",
-            heroImage: "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
+            services: [
+                {
+                    category: "Чистка и лечебные программы",
+                    services: [
+                        { name: "Чистка гигиеническая", description: "мануальная/атравматическая", price: "95 руб." },
+                        { name: "Чистка лечебная", description: "мануальная чистка с противовоспалительной программой \"стоп акне\"", price: "120 руб." },
+                        { name: "Чистка спины", description: "", price: "95 руб." },
+                        { name: "Чистка+ карбокситерапия", description: "", price: "110 руб." },
+                        { name: "Чистка+ ферментотерапия", description: "", price: "110 руб." },
+                        { name: "Программа \"стоп акне\"", description: "", price: "95 руб." },
+                        { name: "Программа \"Ред стоп\"", description: "", price: "95 руб" }
+                    ],
+                },
+                {
+                    category: "Пилинги и уход",
+                    services: [
+                        { name: "Азелаиновый пилинг", description: "", price: "80 руб." },
+                        { name: "Фитиновый пилинг", description: "", price: "80 руб." },
+                        { name: "Пилинг Джесснера (1 слой)", description: "", price: "85 руб." },
+                        { name: "Пилинг Джесснера (2-3 слоя)", description: "", price: "100 руб." },
+                        { name: "Ретинол", description: "", price: "150 руб." },
+                        { name: "PRX-T33", description: "", price: "150 руб." },
+                        { name: "Exo-peel/Biorepeel", description: "", price: "130 руб." }
+                    ]
+                },
+                {
+                    category: "Программы и эпиляция",
+                    services: [
+                        { name: "Микронидлинг", description: "перорбитальная зона", price: "70 руб." },
+                        { name: "", description: "лицо", price: "120 руб." },
+                        { name: "", description: "лицо+шея", price: "170 руб." },
+                        { name: "", description: "лицо+шея+декольте", price: "210 руб." },
+                        { name: "Мезопил", description: "", price: "от 150 руб." }
+                    ]
+                }
+            ]
         };
         
-        // DOM elements
+        // ==================== DOM ЭЛЕМЕНТЫ ====================
         const adminLoginModal = document.getElementById('adminLoginModal');
         const adminPanel = document.getElementById('adminPanel');
         const adminPasswordInput = document.getElementById('adminPassword');
@@ -881,57 +1054,190 @@
         const servicesGrid = document.getElementById('servicesGrid');
         const saveServicesBtn = document.getElementById('saveServicesBtn');
         const addServiceBtn = document.getElementById('addServiceBtn');
+        const exportDataBtn = document.getElementById('exportDataBtn');
         const saveContentBtn = document.getElementById('saveContentBtn');
+        const resetContentBtn = document.getElementById('resetContentBtn');
         const saveImageBtn = document.getElementById('saveImageBtn');
         const resetImageBtn = document.getElementById('resetImageBtn');
         const heroImageUrlInput = document.getElementById('heroImageUrl');
         const imagePreview = document.getElementById('imagePreview');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const loadingText = document.getElementById('loadingText');
         
-        // Переменные для секретного доступа
-        let secretInput = '';
-        let secretTimer = null;
+        // ==================== УТИЛИТЫ ====================
+        function showNotification(message, type = 'success', duration = 5000) {
+            const container = document.getElementById('notificationsContainer');
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                ${message}
+            `;
+            container.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideInRight 0.3s ease reverse';
+                setTimeout(() => notification.remove(), 300);
+            }, duration);
+        }
         
-        // Initialize the site
-        document.addEventListener('DOMContentLoaded', function() {
-            // Load services on the main page
+        function showLoading(text = 'Загрузка...') {
+            loadingText.textContent = text;
+            loadingOverlay.classList.add('active');
+        }
+        
+        function hideLoading() {
+            loadingOverlay.classList.remove('active');
+        }
+        
+        // ==================== СИСТЕМА СИНХРОНИЗАЦИИ ====================
+        // Ключи для LocalStorage
+        const STORAGE_KEYS = {
+            SITE_DATA: 'cosmetolog_site_data',
+            LAST_SYNC: 'cosmetolog_last_sync'
+        };
+        
+        // Сохранить данные в LocalStorage
+        function saveToLocalStorage() {
+            try {
+                siteData.lastUpdated = new Date().toISOString();
+                localStorage.setItem(STORAGE_KEYS.SITE_DATA, JSON.stringify(siteData));
+                localStorage.setItem(STORAGE_KEYS.LAST_SYNC, Date.now().toString());
+                return true;
+            } catch (error) {
+                console.error('Ошибка сохранения:', error);
+                return false;
+            }
+        }
+        
+        // Загрузить данные из LocalStorage
+        function loadFromLocalStorage() {
+            try {
+                const savedData = localStorage.getItem(STORAGE_KEYS.SITE_DATA);
+                if (savedData) {
+                    const parsedData = JSON.parse(savedData);
+                    
+                    // Проверяем версию и обновляем если нужно
+                    if (parsedData.version !== VERSION) {
+                        parsedData.version = VERSION;
+                    }
+                    
+                    siteData = parsedData;
+                    return true;
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки:', error);
+            }
+            return false;
+        }
+        
+        // Синхронизировать данные между вкладками
+        function setupStorageSync() {
+            // Слушаем изменения в LocalStorage
+            window.addEventListener('storage', function(event) {
+                if (event.key === STORAGE_KEYS.SITE_DATA) {
+                    showNotification('Обнаружены обновления. Загружаем...', 'info');
+                    setTimeout(() => {
+                        loadFromLocalStorage();
+                        updateWebsite();
+                        showNotification('Данные обновлены!', 'success');
+                    }, 1000);
+                }
+            });
+            
+            // Периодическая проверка обновлений
+            setInterval(() => {
+                const lastSync = localStorage.getItem(STORAGE_KEYS.LAST_SYNC);
+                if (lastSync) {
+                    const timeSinceLastSync = Date.now() - parseInt(lastSync);
+                    if (timeSinceLastSync < 5000) { // Обновление было меньше 5 секунд назад
+                        loadFromLocalStorage();
+                        updateWebsite();
+                    }
+                }
+            }, 10000); // Проверяем каждые 10 секунд
+        }
+        
+        // ==================== ОБНОВЛЕНИЕ САЙТА ====================
+        function updateWebsite() {
+            // Обновляем контент сайта
+            const content = siteData.siteContent;
+            
+            // Заголовок
+            document.getElementById('siteTitleName').textContent = content.title.split(' ')[1] || 'Cosmetology';
+            document.getElementById('siteSubtitle').textContent = content.subtitle;
+            document.getElementById('footerTitleName').textContent = content.title.split(' ')[1] || 'Cosmetology';
+            
+            // Главная секция
+            document.getElementById('heroTitle').textContent = content.heroTitle;
+            document.getElementById('heroText').textContent = content.heroText;
+            document.getElementById('heroSection').style.backgroundImage = `url('${content.heroImage}')`;
+            
+            // Контакты
+            document.getElementById('contactPhoneDisplay').textContent = content.phone;
+            document.getElementById('contactPhoneLarge').textContent = content.phone;
+            document.getElementById('footerPhone').textContent = content.phone;
+            
+            document.getElementById('contactAddressDisplay').textContent = content.address;
+            document.getElementById('contactAddressLarge').textContent = content.address;
+            document.getElementById('footerAddress').textContent = content.address;
+            
+            document.getElementById('workingHoursDisplay').textContent = content.workingHours;
+            
+            // Обновляем услуги
             renderServices();
             
-            // Load services in admin panel
-            renderServicesEditor();
-            
-            // Update image preview
+            // Обновляем форму админки
+            updateAdminForm();
             updateImagePreview();
-            
-            // Set current year
-            document.getElementById('currentYear').textContent = new Date().getFullYear();
-            
-            // Set contact information
-            updateContactInfo();
-            
-            // Load saved content from localStorage if available
-            loadSavedContent();
-            
-            // Скрыть админ-панель при загрузке
-            adminPanel.classList.remove('active');
-            adminLoginModal.classList.remove('active');
-        });
+        }
         
-        // Render services on the main page
+        // ==================== РЕНДЕРИНГ УСЛУГ ====================
         function renderServices() {
             servicesGrid.innerHTML = '';
             
-            servicesData.forEach(category => {
+            siteData.services.forEach(category => {
                 const card = document.createElement('div');
                 card.className = 'service-card';
                 
                 let servicesHTML = '';
                 category.services.forEach(service => {
-                    servicesHTML += `
-                        <div class="service-item">
-                            <span class="service-name">${service.name}</span>
-                            <span class="service-price">${service.price}</span>
-                        </div>
-                    `;
+                    if (service.name === "Микронидлинг" && service.description) {
+                        // Специальный формат для микронидлинга
+                        servicesHTML += `
+                            <div class="service-item">
+                                <div style="flex: 1;">
+                                    <div class="service-name" style="font-weight: bold; margin-bottom: 5px;">${service.name}</div>
+                                    <div style="font-size: 0.9em; color: #666;">${service.description}</div>
+                                </div>
+                                <span class="service-price">${service.price}</span>
+                            </div>
+                        `;
+                    } else if (!service.name && service.description) {
+                        // Для продолжения списка микронидлинга
+                        servicesHTML += `
+                            <div class="service-item">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.9em; color: #666; margin-left: 15px;">${service.description}</div>
+                                </div>
+                                <span class="service-price">${service.price}</span>
+                            </div>
+                        `;
+                    } else {
+                        // Стандартный формат
+                        const descriptionHTML = service.description ? 
+                            `<div style="font-size: 0.9em; color: #666; margin-top: 3px;">${service.description}</div>` : '';
+                        
+                        servicesHTML += `
+                            <div class="service-item">
+                                <div style="flex: 1;">
+                                    <div class="service-name" style="font-weight: ${service.name ? 'bold' : 'normal'};">${service.name || ''}</div>
+                                    ${descriptionHTML}
+                                </div>
+                                <span class="service-price">${service.price}</span>
+                            </div>
+                        `;
+                    }
                 });
                 
                 card.innerHTML = `
@@ -940,7 +1246,7 @@
                     </div>
                     <div class="service-body">
                         ${servicesHTML}
-                        ${category.note ? `<p class="service-note">${category.note}</p>` : ''}
+                        ${category.note ? `<p class="service-note" style="margin-top: 1rem; font-weight: bold;">${category.note}</p>` : ''}
                     </div>
                 `;
                 
@@ -948,11 +1254,10 @@
             });
         }
         
-        // Render services editor in admin panel
         function renderServicesEditor() {
             servicesEditor.innerHTML = '';
             
-            servicesData.forEach((category, catIndex) => {
+            siteData.services.forEach((category, catIndex) => {
                 const categoryDiv = document.createElement('div');
                 categoryDiv.className = 'service-edit-item';
                 
@@ -960,8 +1265,16 @@
                 category.services.forEach((service, servIndex) => {
                     servicesHTML += `
                         <div class="price-input-group">
-                            <input type="text" class="service-name-input" data-cat="${catIndex}" data-serv="${servIndex}" value="${service.name}" placeholder="Название услуги">
-                            <input type="text" class="service-price-input" data-cat="${catIndex}" data-serv="${servIndex}" value="${service.price}" placeholder="Цена">
+                            <input type="text" class="service-name-input" data-cat="${catIndex}" data-serv="${servIndex}" 
+                                   value="${service.name}" placeholder="Название услуги (оставить пустым для продолжения списка)">
+                            <input type="text" class="service-description-input" data-cat="${catIndex}" data-serv="${servIndex}" 
+                                   value="${service.description}" placeholder="Описание (мелким шрифтом)">
+                            <input type="text" class="service-price-input" data-cat="${catIndex}" data-serv="${servIndex}" 
+                                   value="${service.price}" placeholder="Цена">
+                            <button class="btn btn-secondary remove-service-btn" data-cat="${catIndex}" data-serv="${servIndex}"
+                                    style="padding: 0.5rem; width: auto;">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </div>
                     `;
                 });
@@ -969,221 +1282,302 @@
                 categoryDiv.innerHTML = `
                     <div class="service-edit-header">
                         <h4>${category.category}</h4>
-                        <button class="btn btn-secondary btn-small remove-category-btn" data-cat="${catIndex}">Удалить категорию</button>
+                        <div>
+                            <button class="btn btn-secondary btn-small move-category-up" data-cat="${catIndex}">
+                                <i class="fas fa-arrow-up"></i>
+                            </button>
+                            <button class="btn btn-secondary btn-small move-category-down" data-cat="${catIndex}">
+                                <i class="fas fa-arrow-down"></i>
+                            </button>
+                            <button class="btn btn-secondary btn-small remove-category-btn" data-cat="${catIndex}">
+                                <i class="fas fa-trash"></i> Удалить
+                            </button>
+                        </div>
                     </div>
                     <div class="admin-form">
                         <div class="form-group">
                             <label>Название категории:</label>
-                            <input type="text" class="category-name-input" data-cat="${catIndex}" value="${category.category}">
+                            <input type="text" class="category-name-input" data-cat="${catIndex}" 
+                                   value="${category.category}" placeholder="Название категории">
                         </div>
                         <div class="form-group">
                             <label>Примечание (необязательно):</label>
-                            <input type="text" class="category-note-input" data-cat="${catIndex}" value="${category.note || ''}" placeholder="Например: Цены уточняйте при записи">
+                            <input type="text" class="category-note-input" data-cat="${catIndex}" 
+                                   value="${category.note || ''}" placeholder="Например: @dr.elena.cosm">
                         </div>
                         <div class="form-group">
                             <label>Услуги в категории:</label>
                             ${servicesHTML}
                         </div>
-                        <button class="btn btn-secondary add-service-btn" data-cat="${catIndex}">+ Добавить услугу в эту категорию</button>
+                        <button class="btn btn-primary add-service-btn" data-cat="${catIndex}">
+                            <i class="fas fa-plus"></i> Добавить услугу
+                        </button>
                     </div>
                 `;
                 
                 servicesEditor.appendChild(categoryDiv);
             });
             
-            // Add event listeners to dynamically created buttons
+            // Назначаем обработчики событий
+            attachServiceEditorEvents();
+        }
+        
+        function attachServiceEditorEvents() {
+            // Удаление категории
             document.querySelectorAll('.remove-category-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const catIndex = parseInt(this.getAttribute('data-cat'));
                     if (confirm('Удалить эту категорию?')) {
-                        servicesData.splice(catIndex, 1);
+                        siteData.services.splice(catIndex, 1);
                         renderServicesEditor();
                     }
                 });
             });
             
+            // Добавление услуги
             document.querySelectorAll('.add-service-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const catIndex = parseInt(this.getAttribute('data-cat'));
-                    servicesData[catIndex].services.push({ name: "Новая услуга", price: "0₽" });
+                    siteData.services[catIndex].services.push({ name: "Новая услуга", description: "", price: "0 руб." });
                     renderServicesEditor();
                 });
             });
             
-            // Add event listeners to inputs
+            // Удаление услуги
+            document.querySelectorAll('.remove-service-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const catIndex = parseInt(this.getAttribute('data-cat'));
+                    const servIndex = parseInt(this.getAttribute('data-serv'));
+                    if (confirm('Удалить эту услугу?')) {
+                        siteData.services[catIndex].services.splice(servIndex, 1);
+                        renderServicesEditor();
+                    }
+                });
+            });
+            
+            // Перемещение категорий
+            document.querySelectorAll('.move-category-up').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const catIndex = parseInt(this.getAttribute('data-cat'));
+                    if (catIndex > 0) {
+                        [siteData.services[catIndex], siteData.services[catIndex - 1]] = 
+                        [siteData.services[catIndex - 1], siteData.services[catIndex]];
+                        renderServicesEditor();
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.move-category-down').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const catIndex = parseInt(this.getAttribute('data-cat'));
+                    if (catIndex < siteData.services.length - 1) {
+                        [siteData.services[catIndex], siteData.services[catIndex + 1]] = 
+                        [siteData.services[catIndex + 1], siteData.services[catIndex]];
+                        renderServicesEditor();
+                    }
+                });
+            });
+            
+            // Обработчики для полей ввода
+            attachInputHandlers();
+        }
+        
+        function attachInputHandlers() {
+            // Название категории
             document.querySelectorAll('.category-name-input').forEach(input => {
-                input.addEventListener('change', function() {
+                input.addEventListener('input', function() {
                     const catIndex = parseInt(this.getAttribute('data-cat'));
-                    servicesData[catIndex].category = this.value;
+                    siteData.services[catIndex].category = this.value;
                 });
             });
             
+            // Примечание категории
             document.querySelectorAll('.category-note-input').forEach(input => {
-                input.addEventListener('change', function() {
+                input.addEventListener('input', function() {
                     const catIndex = parseInt(this.getAttribute('data-cat'));
-                    servicesData[catIndex].note = this.value;
+                    siteData.services[catIndex].note = this.value;
                 });
             });
             
+            // Название услуги
             document.querySelectorAll('.service-name-input').forEach(input => {
-                input.addEventListener('change', function() {
+                input.addEventListener('input', function() {
                     const catIndex = parseInt(this.getAttribute('data-cat'));
                     const servIndex = parseInt(this.getAttribute('data-serv'));
-                    servicesData[catIndex].services[servIndex].name = this.value;
+                    siteData.services[catIndex].services[servIndex].name = this.value;
                 });
             });
             
+            // Описание услуги
+            document.querySelectorAll('.service-description-input').forEach(input => {
+                input.addEventListener('input', function() {
+                    const catIndex = parseInt(this.getAttribute('data-cat'));
+                    const servIndex = parseInt(this.getAttribute('data-serv'));
+                    siteData.services[catIndex].services[servIndex].description = this.value;
+                });
+            });
+            
+            // Цена услуги
             document.querySelectorAll('.service-price-input').forEach(input => {
-                input.addEventListener('change', function() {
+                input.addEventListener('input', function() {
                     const catIndex = parseInt(this.getAttribute('data-cat'));
                     const servIndex = parseInt(this.getAttribute('data-serv'));
-                    servicesData[catIndex].services[servIndex].price = this.value;
+                    siteData.services[catIndex].services[servIndex].price = this.value;
                 });
             });
         }
         
-        // Update image preview
+        // ==================== ОБНОВЛЕНИЕ ФОРМЫ АДМИНКИ ====================
+        function updateAdminForm() {
+            const content = siteData.siteContent;
+            
+            document.getElementById('siteTitle').value = content.title;
+            document.getElementById('siteSubtitle').value = content.subtitle;
+            document.getElementById('heroTitle').value = content.heroTitle;
+            document.getElementById('heroText').value = content.heroText;
+            document.getElementById('contactPhone').value = content.phone;
+            document.getElementById('contactAddress').value = content.address;
+            document.getElementById('workingHours').value = content.workingHours;
+            document.getElementById('heroImageUrl').value = content.heroImage;
+        }
+        
         function updateImagePreview() {
-            imagePreview.style.backgroundImage = `url('${heroImageUrlInput.value}')`;
+            imagePreview.style.backgroundImage = `url('${siteData.siteContent.heroImage}')`;
         }
         
-        // Update contact information
-        function updateContactInfo() {
-            document.getElementById('contactPhoneLarge').textContent = siteContent.phone;
-            document.getElementById('contactAddressLarge').textContent = siteContent.address;
-        }
+        // ==================== СЕКРЕТНЫЙ ДОСТУП ====================
+        let secretInput = '';
+        let secretTimer = null;
         
-        // Load saved content from localStorage
-        function loadSavedContent() {
-            const savedServices = localStorage.getItem('cosmetologServices');
-            const savedContent = localStorage.getItem('cosmetologContent');
-            
-            if (savedServices) {
-                servicesData = JSON.parse(savedServices);
-                renderServices();
-                renderServicesEditor();
-            }
-            
-            if (savedContent) {
-                siteContent = JSON.parse(savedContent);
-                
-                // Update website content
-                document.getElementById('siteTitle').innerHTML = `Косметолог <span>${siteContent.title.split(' ')[1] || 'Elena'}</span>`;
-                document.getElementById('siteSubtitle').textContent = siteContent.subtitle;
-                document.getElementById('heroTitle').textContent = siteContent.heroTitle;
-                document.getElementById('heroText').textContent = siteContent.heroText;
-                document.getElementById('contactPhoneDisplay').textContent = siteContent.phone;
-                document.getElementById('contactAddressDisplay').textContent = siteContent.address;
-                document.getElementById('footerTitle').textContent = siteContent.title;
-                document.getElementById('footerPhone').textContent = siteContent.phone;
-                document.getElementById('footerAddress').textContent = siteContent.address;
-                document.getElementById('heroSection').style.backgroundImage = `url('${siteContent.heroImage}')`;
-                
-                // Update contact section
-                updateContactInfo();
-                
-                // Update admin panel inputs
-                document.getElementById('siteTitle').value = siteContent.title;
-                document.getElementById('siteSubtitle').value = siteContent.subtitle;
-                document.getElementById('heroTitle').value = siteContent.heroTitle;
-                document.getElementById('heroText').value = siteContent.heroText;
-                document.getElementById('contactPhone').value = siteContent.phone;
-                document.getElementById('contactAddress').value = siteContent.address;
-                document.getElementById('heroImageUrl').value = siteContent.heroImage;
-                
-                updateImagePreview();
-            }
-        }
-        
-        // Save content to localStorage
-        function saveContent() {
-            localStorage.setItem('cosmetologServices', JSON.stringify(servicesData));
-            localStorage.setItem('cosmetologContent', JSON.stringify(siteContent));
-        }
-        
-        // Секретный доступ к админке
         function setupSecretAccess() {
-            // Слушаем нажатия клавиш для секретного кода
+            // Ввод секретного кода
             document.addEventListener('keydown', function(e) {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+                
                 secretInput += e.key.toLowerCase();
                 
-                // Очищаем ввод через 3 секунды
-                if (secretTimer) {
-                    clearTimeout(secretTimer);
-                }
+                if (secretTimer) clearTimeout(secretTimer);
+                secretTimer = setTimeout(() => { secretInput = ''; }, 3000);
                 
-                secretTimer = setTimeout(() => {
-                    secretInput = '';
-                }, 3000);
-                
-                // Проверяем, если введен секретный код
                 if (secretInput.includes(SECRET_CODE)) {
-                    // Показываем скрытую кнопку администратора
                     adminSecretAccess.classList.add('show');
                     secretInput = '';
-                    
-                    // Автоматически скрываем через 10 секунд
-                    setTimeout(() => {
-                        adminSecretAccess.classList.remove('show');
-                    }, 10000);
+                    setTimeout(() => adminSecretAccess.classList.remove('show'), 10000);
                 }
             });
             
-            // Клик по секретной области в левом верхнем углу
-            secretTrigger.addEventListener('click', function(e) {
-                // Показываем скрытую кнопку администратора
+            // Секретная область клика
+            secretTrigger.addEventListener('click', function() {
                 adminSecretAccess.classList.add('show');
-                
-                // Автоматически скрываем через 10 секунд
-                setTimeout(() => {
-                    adminSecretAccess.classList.remove('show');
-                }, 10000);
+                setTimeout(() => adminSecretAccess.classList.remove('show'), 10000);
             });
             
-            // Клик по скрытой кнопке администратора
+            // Клик по иконке админа
             adminSecretAccess.addEventListener('click', function() {
                 adminLoginModal.classList.add('active');
                 this.classList.remove('show');
             });
         }
         
-        // Event Listeners
+        // ==================== ЭКСПОРТ/ИМПОРТ ====================
+        function exportData() {
+            const dataStr = JSON.stringify(siteData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `cosmetolog-backup-${new Date().toISOString().split('T')[0]}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            showNotification('Данные экспортированы!', 'success');
+        }
         
-        // Настройка секретного доступа
-        setupSecretAccess();
+        function importData(jsonData) {
+            try {
+                const importedData = JSON.parse(jsonData);
+                
+                // Проверяем структуру
+                if (!importedData.siteContent || !importedData.services) {
+                    throw new Error('Некорректный формат данных');
+                }
+                
+                siteData = importedData;
+                siteData.version = VERSION;
+                siteData.lastUpdated = new Date().toISOString();
+                
+                saveToLocalStorage();
+                updateWebsite();
+                renderServicesEditor();
+                
+                showNotification('Данные успешно импортированы!', 'success');
+                return true;
+            } catch (error) {
+                showNotification('Ошибка импорта данных: ' + error.message, 'error');
+                return false;
+            }
+        }
         
-        // Login button
+        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Загружаем данные
+            const hasSavedData = loadFromLocalStorage();
+            
+            // Обновляем сайт
+            updateWebsite();
+            
+            // Обновляем форму админки
+            updateAdminForm();
+            renderServicesEditor();
+            
+            // Настраиваем синхронизацию
+            setupStorageSync();
+            
+            // Настраиваем секретный доступ
+            setupSecretAccess();
+            
+            // Обновляем год в футере
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            
+            // Показываем приветствие если есть сохраненные данные
+            if (hasSavedData) {
+                showNotification(`Данные загружены (обновлено: ${new Date(siteData.lastUpdated).toLocaleString()})`, 'info', 3000);
+            }
+        });
+        
+        // ==================== ОБРАБОТЧИКИ СОБЫТИЙ ====================
+        
+        // Вход в админку
         loginBtn.addEventListener('click', function() {
             if (adminPasswordInput.value === ADMIN_PASSWORD) {
                 adminLoginModal.classList.remove('active');
                 adminPanel.classList.add('active');
                 adminPasswordInput.value = '';
+                showNotification('Добро пожаловать в админ-панель!', 'success');
             } else {
-                alert('Неверный пароль! Попробуйте снова.');
+                showNotification('Неверный пароль!', 'error');
             }
         });
         
-        // Cancel login
         cancelLoginBtn.addEventListener('click', function() {
             adminLoginModal.classList.remove('active');
             adminPasswordInput.value = '';
         });
         
-        // Close admin panel
         closeAdminBtn.addEventListener('click', function() {
             adminPanel.classList.remove('active');
+            showNotification('Админ-панель закрыта', 'info');
         });
         
-        // Admin tabs
+        // Переключение вкладок
         adminTabs.forEach(tab => {
             tab.addEventListener('click', function() {
                 const tabId = this.getAttribute('data-tab');
                 
-                // Update active tab
                 adminTabs.forEach(t => t.classList.remove('active'));
                 this.classList.add('active');
                 
-                // Show corresponding section
                 adminSections.forEach(section => {
                     section.classList.remove('active');
                     if (section.id === tabId + 'Tab') {
@@ -1193,82 +1587,157 @@
             });
         });
         
-        // Save services
+        // Сохранение услуг
         saveServicesBtn.addEventListener('click', function() {
-            saveContent();
-            renderServices();
-            alert('Изменения в услугах сохранены!');
+            showLoading('Сохранение изменений...');
+            
+            setTimeout(() => {
+                if (saveToLocalStorage()) {
+                    updateWebsite();
+                    hideLoading();
+                    showNotification('Изменения в услугах сохранены! Обновите страницу (F5) чтобы увидеть изменения.', 'success', 8000);
+                    
+                    // Триггерим событие для синхронизации
+                    window.dispatchEvent(new Event('storage'));
+                } else {
+                    hideLoading();
+                    showNotification('Ошибка сохранения!', 'error');
+                }
+            }, 1000);
         });
         
-        // Add new service category
+        // Добавление категории
         addServiceBtn.addEventListener('click', function() {
-            servicesData.push({
+            siteData.services.push({
                 category: "Новая категория",
                 services: [
-                    { name: "Пример услуги", price: "100₽" }
-                ]
+                    { name: "Пример услуги", description: "", price: "100 руб." }
+                ],
+                note: ""
             });
             renderServicesEditor();
+            showNotification('Добавлена новая категория', 'info');
         });
         
-        // Save content changes
+        // Экспорт данных
+        exportDataBtn.addEventListener('click', exportData);
+        
+        // Сохранение контента
         saveContentBtn.addEventListener('click', function() {
-            // Update site content object
-            siteContent.title = document.getElementById('siteTitle').value;
-            siteContent.subtitle = document.getElementById('siteSubtitle').value;
-            siteContent.heroTitle = document.getElementById('heroTitle').value;
-            siteContent.heroText = document.getElementById('heroText').value;
-            siteContent.phone = document.getElementById('contactPhone').value;
-            siteContent.address = document.getElementById('contactAddress').value;
+            const content = siteData.siteContent;
             
-            // Update website
-            document.getElementById('siteTitle').innerHTML = `Косметолог <span>${siteContent.title.split(' ')[1] || 'Elena'}</span>`;
-            document.getElementById('siteSubtitle').textContent = siteContent.subtitle;
-            document.getElementById('heroTitle').textContent = siteContent.heroTitle;
-            document.getElementById('heroText').textContent = siteContent.heroText;
-            document.getElementById('contactPhoneDisplay').textContent = siteContent.phone;
-            document.getElementById('contactAddressDisplay').textContent = siteContent.address;
-            document.getElementById('footerTitle').textContent = siteContent.title;
-            document.getElementById('footerPhone').textContent = siteContent.phone;
-            document.getElementById('footerAddress').textContent = siteContent.address;
+            content.title = document.getElementById('siteTitle').value;
+            content.subtitle = document.getElementById('siteSubtitle').value;
+            content.heroTitle = document.getElementById('heroTitle').value;
+            content.heroText = document.getElementById('heroText').value;
+            content.phone = document.getElementById('contactPhone').value;
+            content.address = document.getElementById('contactAddress').value;
+            content.workingHours = document.getElementById('workingHours').value;
             
-            // Update contact section
-            updateContactInfo();
+            showLoading('Сохранение контента...');
             
-            saveContent();
-            alert('Изменения в контенте сохранены!');
+            setTimeout(() => {
+                if (saveToLocalStorage()) {
+                    updateWebsite();
+                    hideLoading();
+                    showNotification('Контент сохранен! Обновите страницу (F5) чтобы увидеть изменения.', 'success', 8000);
+                    
+                    window.dispatchEvent(new Event('storage'));
+                } else {
+                    hideLoading();
+                    showNotification('Ошибка сохранения!', 'error');
+                }
+            }, 1000);
         });
         
-        // Save image changes
+        // Сброс контента
+        resetContentBtn.addEventListener('click', function() {
+            if (confirm('Сбросить весь контент к исходным значениям?')) {
+                siteData.siteContent = {
+                    title: "Elena Cosmetology",
+                    subtitle: "ПРОФЕССИОНАЛЬНЫЙ УХОД ЗА КОЖЕЙ",
+                    heroTitle: "Эстетика и здоровье вашей кожи",
+                    heroText: "Профессиональные косметологические услуги с индивидуальным подходом к каждому клиенту. Современные методики, качественные препараты и видимый результат.",
+                    phone: "Запись через директ",
+                    address: "Минск, ст.м.Октябрьская, Янки Купалы 19",
+                    workingHours: "Ежедневно 9:00 - 20:00",
+                    heroImage: "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
+                };
+                
+                updateAdminForm();
+                saveToLocalStorage();
+                updateWebsite();
+                showNotification('Контент сброшен к исходному', 'info');
+            }
+        });
+        
+        // Сохранение изображения
         saveImageBtn.addEventListener('click', function() {
-            siteContent.heroImage = heroImageUrlInput.value;
-            document.getElementById('heroSection').style.backgroundImage = `url('${siteContent.heroImage}')`;
-            updateImagePreview();
-            saveContent();
-            alert('Изображение обновлено!');
+            siteData.siteContent.heroImage = heroImageUrlInput.value;
+            
+            showLoading('Обновление изображения...');
+            
+            setTimeout(() => {
+                if (saveToLocalStorage()) {
+                    updateWebsite();
+                    hideLoading();
+                    showNotification('Изображение обновлено! Обновите страницу (F5) чтобы увидеть изменения.', 'success', 8000);
+                    
+                    window.dispatchEvent(new Event('storage'));
+                } else {
+                    hideLoading();
+                    showNotification('Ошибка сохранения!', 'error');
+                }
+            }, 1000);
         });
         
-        // Reset image
+        // Сброс изображения
         resetImageBtn.addEventListener('click', function() {
             const defaultImage = "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80";
             heroImageUrlInput.value = defaultImage;
-            siteContent.heroImage = defaultImage;
-            document.getElementById('heroSection').style.backgroundImage = `url('${defaultImage}')`;
+            siteData.siteContent.heroImage = defaultImage;
+            
             updateImagePreview();
-            saveContent();
-            alert('Изображение сброшено к исходному!');
+            saveToLocalStorage();
+            updateWebsite();
+            showNotification('Изображение сброшено к исходному', 'info');
         });
         
-        // Update image preview on URL change
+        // Предпросмотр изображения
         heroImageUrlInput.addEventListener('input', updateImagePreview);
         
-        // Close modals on Escape key
+        // Закрытие по Escape
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 adminLoginModal.classList.remove('active');
                 adminPanel.classList.remove('active');
             }
         });
+        
+        // Drag & Drop импорт
+        document.addEventListener('dragover', function(e) {
+            e.preventDefault();
+        });
+        
+        document.addEventListener('drop', function(e) {
+            e.preventDefault();
+            
+            if (e.dataTransfer.files.length > 0) {
+                const file = e.dataTransfer.files[0];
+                if (file.type === 'application/json') {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        importData(event.target.result);
+                    };
+                    reader.readAsText(file);
+                } else {
+                    showNotification('Пожалуйста, выберите JSON файл', 'error');
+                }
+            }
+        });
+        
+        // Информация о версии
+        console.log(`Elena Cosmetology сайт v${VERSION} - Админ панель активирована`);
     </script>
 </body>
 </html>
