@@ -435,6 +435,23 @@
             font-size: 0.9rem;
         }
         
+        /* Consultation description */
+        .consultation-desc {
+            font-size: 0.95rem;
+            color: #666;
+            margin-top: 0.5rem;
+            line-height: 1.5;
+        }
+        
+        .consultation-desc ul {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+        }
+        
+        .consultation-desc li {
+            margin-bottom: 0.3rem;
+        }
+        
         /* Footer */
         footer {
             background-color: var(--dark-color);
@@ -923,8 +940,7 @@
                     <div class="contact-icon">
                         <i class="fas fa-comment-alt"></i>
                     </div>
-                    <div class="contact-text" id="contactPhoneLarge">Для записи на консультацию и подбор процедуры пишите в директ</div>
-                    <p>Запись через Instagram Direct</p>
+                    <div class="contact-text" id="contactPhoneLarge">Запись через директ</div>
                 </div>
                 
                 <div class="contact-item-large">
@@ -1003,6 +1019,17 @@
             },
             services: [
                 {
+                    category: "Консультация",
+                    services: [
+                        { 
+                            name: "Первичная консультация", 
+                            description: "Диагностика состояния кожи. Сбор анамнеза и анализ потребностей. Рекомендации по домашнему уходу и подбор косметики. План рекомендованных профессиональных процедур (по желанию).", 
+                            price: "80 руб.",
+                            note: "При совмещении консультации и процедуры в один визит — консультация в подарок."
+                        }
+                    ]
+                },
+                {
                     category: "Чистка и лечебные программы",
                     services: [
                         { name: "Чистка гигиеническая", description: "мануальная/атравматическая", price: "95 руб." },
@@ -1011,8 +1038,8 @@
                         { name: "Чистка+ карбокситерапия", description: "", price: "110 руб." },
                         { name: "Чистка+ ферментотерапия", description: "", price: "110 руб." },
                         { name: "Программа \"стоп акне\"", description: "", price: "95 руб." },
-                        { name: "Программа \"Ред стоп\"", description: "", price: "95 руб" }
-                    ],
+                        { name: "Программа \"Ред стоп\"", description: "", price: "95 руб." }
+                    ]
                 },
                 {
                     category: "Пилинги и уход",
@@ -1027,13 +1054,21 @@
                     ]
                 },
                 {
-                    category: "Программы и эпиляция",
+                    category: "Микронидлинг",
                     services: [
-                        { name: "Микронидлинг", description: "перорбитальная зона", price: "70 руб." },
-                        { name: "", description: "лицо", price: "120 руб." },
-                        { name: "", description: "лицо+шея", price: "170 руб." },
-                        { name: "", description: "лицо+шея+декольте", price: "210 руб." },
+                        { name: "Перорбитальная зона", description: "", price: "70 руб." },
+                        { name: "Лицо", description: "", price: "120 руб." },
+                        { name: "Лицо+шея", description: "", price: "170 руб." },
+                        { name: "Лицо+шея+декольте", description: "", price: "210 руб." },
                         { name: "Мезопил", description: "", price: "от 150 руб." }
+                    ]
+                },
+                {
+                    category: "Массаж и уход",
+                    services: [
+                        { name: "миофасциальный массаж", description: "", price: "80 руб." },
+                        { name: "миофасциальный массаж + пилинг", description: "по состоянию и потребности кожи", price: "от 120 руб." },
+                        { name: "миофасциальный массаж+ карбокситерапия", description: "", price: "150 руб." }
                     ]
                 }
             ]
@@ -1202,29 +1237,24 @@
                 
                 let servicesHTML = '';
                 category.services.forEach(service => {
-                    if (service.name === "Микронидлинг" && service.description) {
-                        // Специальный формат для микронидлинга
+                    if (category.category === "Консультация") {
+                        // Специальный формат для консультации
                         servicesHTML += `
                             <div class="service-item">
                                 <div style="flex: 1;">
-                                    <div class="service-name" style="font-weight: bold; margin-bottom: 5px;">${service.name}</div>
-                                    <div style="font-size: 0.9em; color: #666;">${service.description}</div>
-                                </div>
-                                <span class="service-price">${service.price}</span>
-                            </div>
-                        `;
-                    } else if (!service.name && service.description) {
-                        // Для продолжения списка микронидлинга
-                        servicesHTML += `
-                            <div class="service-item">
-                                <div style="flex: 1;">
-                                    <div style="font-size: 0.9em; color: #666; margin-left: 15px;">${service.description}</div>
+                                    <div class="service-name" style="font-weight: bold;">${service.name}</div>
+                                    <div class="consultation-desc">
+                                        <ul>
+                                            ${service.description.split('. ').filter(item => item.trim()).map(item => `<li>${item.trim()}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                    ${service.note ? `<p class="service-note" style="margin-top: 1rem; font-weight: bold; color: var(--accent-color);">${service.note}</p>` : ''}
                                 </div>
                                 <span class="service-price">${service.price}</span>
                             </div>
                         `;
                     } else {
-                        // Стандартный формат
+                        // Стандартный формат для других услуг
                         const descriptionHTML = service.description ? 
                             `<div style="font-size: 0.9em; color: #666; margin-top: 3px;">${service.description}</div>` : '';
                         
@@ -1246,7 +1276,6 @@
                     </div>
                     <div class="service-body">
                         ${servicesHTML}
-                        ${category.note ? `<p class="service-note" style="margin-top: 1rem; font-weight: bold;">${category.note}</p>` : ''}
                     </div>
                 `;
                 
@@ -1266,11 +1295,13 @@
                     servicesHTML += `
                         <div class="price-input-group">
                             <input type="text" class="service-name-input" data-cat="${catIndex}" data-serv="${servIndex}" 
-                                   value="${service.name}" placeholder="Название услуги (оставить пустым для продолжения списка)">
+                                   value="${service.name}" placeholder="Название услуги">
                             <input type="text" class="service-description-input" data-cat="${catIndex}" data-serv="${servIndex}" 
                                    value="${service.description}" placeholder="Описание (мелким шрифтом)">
                             <input type="text" class="service-price-input" data-cat="${catIndex}" data-serv="${servIndex}" 
                                    value="${service.price}" placeholder="Цена">
+                            <input type="text" class="service-note-input" data-cat="${catIndex}" data-serv="${servIndex}" 
+                                   value="${service.note || ''}" placeholder="Примечание (необязательно)">
                             <button class="btn btn-secondary remove-service-btn" data-cat="${catIndex}" data-serv="${servIndex}"
                                     style="padding: 0.5rem; width: auto;">
                                 <i class="fas fa-trash"></i>
@@ -1299,11 +1330,6 @@
                             <label>Название категории:</label>
                             <input type="text" class="category-name-input" data-cat="${catIndex}" 
                                    value="${category.category}" placeholder="Название категории">
-                        </div>
-                        <div class="form-group">
-                            <label>Примечание (необязательно):</label>
-                            <input type="text" class="category-note-input" data-cat="${catIndex}" 
-                                   value="${category.note || ''}" placeholder="Например: @dr.elena.cosm">
                         </div>
                         <div class="form-group">
                             <label>Услуги в категории:</label>
@@ -1338,7 +1364,7 @@
             document.querySelectorAll('.add-service-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const catIndex = parseInt(this.getAttribute('data-cat'));
-                    siteData.services[catIndex].services.push({ name: "Новая услуга", description: "", price: "0 руб." });
+                    siteData.services[catIndex].services.push({ name: "Новая услуга", description: "", price: "0 руб.", note: "" });
                     renderServicesEditor();
                 });
             });
@@ -1391,14 +1417,6 @@
                 });
             });
             
-            // Примечание категории
-            document.querySelectorAll('.category-note-input').forEach(input => {
-                input.addEventListener('input', function() {
-                    const catIndex = parseInt(this.getAttribute('data-cat'));
-                    siteData.services[catIndex].note = this.value;
-                });
-            });
-            
             // Название услуги
             document.querySelectorAll('.service-name-input').forEach(input => {
                 input.addEventListener('input', function() {
@@ -1423,6 +1441,15 @@
                     const catIndex = parseInt(this.getAttribute('data-cat'));
                     const servIndex = parseInt(this.getAttribute('data-serv'));
                     siteData.services[catIndex].services[servIndex].price = this.value;
+                });
+            });
+            
+            // Примечание услуги
+            document.querySelectorAll('.service-note-input').forEach(input => {
+                input.addEventListener('input', function() {
+                    const catIndex = parseInt(this.getAttribute('data-cat'));
+                    const servIndex = parseInt(this.getAttribute('data-serv'));
+                    siteData.services[catIndex].services[servIndex].note = this.value;
                 });
             });
         }
@@ -1611,9 +1638,8 @@
             siteData.services.push({
                 category: "Новая категория",
                 services: [
-                    { name: "Пример услуги", description: "", price: "100 руб." }
-                ],
-                note: ""
+                    { name: "Пример услуги", description: "", price: "100 руб.", note: "" }
+                ]
             });
             renderServicesEditor();
             showNotification('Добавлена новая категория', 'info');
